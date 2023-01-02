@@ -46,7 +46,7 @@ function loadMakes(thingiverse: Thingiverse, userName: string, ctx: TelegrafCont
                 }
 
                 if (pages[pageToLoad + 1] == undefined || currentPage.length < ITEMS_PER_PAGE || pages.length < pageToLoad + 1) {
-                    ctx.reply("✅ Those where all your makes")
+                    ctx.reply("✅ Those were all your makes")
                 } else {
                     const loadMoreButton = Markup.inlineKeyboard([
                         [Markup.callbackButton('Load more!', `loadMoreMakes ${pageToLoad + 1} ${userName}`)]
