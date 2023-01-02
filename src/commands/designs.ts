@@ -47,7 +47,7 @@ function loadDesigns(thingiverse: Thingiverse, username: string, ctx: TelegrafCo
 
                 /* Show load more button */
                 if (pages[pageToLoad + 1] == undefined || currentPage.length < ITEMS_PER_PAGE || pages.length < pageToLoad + 1) {
-                    ctx.reply("✅ Those where all your designs")
+                    ctx.reply("✅ Those were all your designs")
                 } else {
                     const loadMoreButton = Markup.inlineKeyboard([
                         [Markup.callbackButton('Load more!', `loadMoreDesigns ${pageToLoad + 1} ${username}`)]
