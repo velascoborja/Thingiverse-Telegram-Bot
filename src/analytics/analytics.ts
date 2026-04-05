@@ -1,19 +1,7 @@
-import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
-
 export class EventHelper {
-    client: any
-    db: DatabaseDataSource
-
-    constructor(db: DatabaseDataSource) {
-        this.db = db
-    }
-
     logEvent(event: Event, userId?: string, params?: Map<EventParam, string>) {
-        try {
-            this.db.trackEvent(event, userId, params)
-        } catch (error) {
-            console.log(error)
-        }
+        const paramsStr = params ? Array.from(params.entries()).map(([k, v]) => `${k}=${v}`).join(' ') : ''
+        console.log(`[analytics] event=${event}`, userId ? `userId=${userId}` : '', paramsStr)
     }
 }
 

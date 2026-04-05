@@ -5,14 +5,14 @@ import { ITEMS_PER_PAGE } from "./const"
 import { sendDefaultUsernameNotProvidedMessage, thingToMessage } from "./messages"
 import { Collection } from "../models/collection"
 import * as Utils from './utils'
-import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
+import UserStore from "../datasource/UserStore"
 import { User } from "../models/user"
 import { EventHelper, Event } from "../analytics/analytics"
 import { Category } from "../models/category"
 
 const ROW_COUNT = 3
 
-function commandCategories(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource, analytics: EventHelper) {
+function commandCategories(bot: Telegraf<any>, thingiverse: Thingiverse, userStore: UserStore, analytics: EventHelper) {
     bot.command('categories', async (ctx: TelegrafContext) => {
         analytics.logEvent(Event.COMMAND_CATEGORIES, Utils.getUserId(ctx))
 

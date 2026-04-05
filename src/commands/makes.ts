@@ -2,16 +2,16 @@ import { Markup, Telegraf } from "telegraf"
 import { TelegrafContext } from "telegraf/typings/context"
 import { EventHelper, Event } from "../analytics/analytics"
 import Thingiverse from "../datasource/api/thingiverse"
-import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
+import UserStore from "../datasource/UserStore"
 import { ITEMS_PER_PAGE } from "./const"
 import { sendDefaultUsernameNotProvidedMessage, thingToMessage } from "./messages"
 import * as Utils from './utils'
 
-function commandMakes(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource, analytics: EventHelper) {
+function commandMakes(bot: Telegraf<any>, thingiverse: Thingiverse, userStore: UserStore, analytics: EventHelper) {
 
     bot.command('makes', async (ctx) => {
         analytics.logEvent(Event.COMMAND_MAKES, Utils.getUserId(ctx))
-        const username = await Utils.getUsername(db, ctx.message.text, ctx.message?.from?.id.toString())
+        const username = await Utils.getUsername(userStore, ctx.message.text, ctx.message?.from?.id.toString())
         
         if (username != '') {
             ctx.reply("⏳ Loading your makes...")

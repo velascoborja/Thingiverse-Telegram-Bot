@@ -1,5 +1,5 @@
 import { TelegrafContext } from "telegraf/typings/context";
-import DatabaseDataSource from "../datasource/db/DatabaseDataSource";
+import UserStore from "../datasource/UserStore";
 import { User } from "../models/user";
 
 export function removeCmd(cmd?: string): string {
@@ -19,10 +19,10 @@ export function slice(input: Array<any>, size: number) {
     return output
 }
 
-export function getUsername(db: DatabaseDataSource, message: string, userId: string): Promise<string> {
+export function getUsername(userStore: UserStore, message: string, userId: string): Promise<string> {
     return new Promise(async function (resolve) {
         const commandUsername = removeCmd(message)
-        const defaultUsername = await db.getUserThingiverseUsername(userId)
+        const defaultUsername = await userStore.getThingiverseUsername(userId)
         const username = commandUsername != "" ? commandUsername : defaultUsername
         resolve(username)
     })

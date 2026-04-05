@@ -5,17 +5,17 @@ import { ITEMS_PER_PAGE } from "./const"
 import { sendDefaultUsernameNotProvidedMessage, thingToMessage } from "./messages"
 import { Collection } from "../models/collection"
 import * as Utils from './utils'
-import DatabaseDataSource from "../datasource/db/DatabaseDataSource"
+import UserStore from "../datasource/UserStore"
 import { User } from "../models/user"
 import { EventHelper, Event } from "../analytics/analytics"
 
 const ROW_COUNT = 3
 
-function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse, db: DatabaseDataSource, analytics: EventHelper) {
+function commandCollections(bot: Telegraf<any>, thingiverse: Thingiverse, userStore: UserStore, analytics: EventHelper) {
     bot.command('collections', async (ctx: TelegrafContext) => {
         analytics.logEvent(Event.COMMAND_COLLECTIONS, Utils.getUserId(ctx))
 
-        const username = await Utils.getUsername(db, ctx.message?.text, ctx.message?.from?.id.toString())
+        const username = await Utils.getUsername(userStore, ctx.message?.text, ctx.message?.from?.id.toString())
 
         if (username != '') {
             ctx.reply("⏳ Loading your collections...")

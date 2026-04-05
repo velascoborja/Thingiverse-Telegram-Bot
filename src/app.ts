@@ -1,6 +1,7 @@
-import { Telegraf, Markup } from 'telegraf'
+import { Telegraf } from 'telegraf'
 import * as dotenv from 'dotenv'
 import Thingiverse from './datasource/api/thingiverse'
+import UserStore from './datasource/UserStore'
 
 import commandLikes from './commands/likes'
 import commandCollections from './commands/collections'
@@ -12,7 +13,6 @@ import commandZip from './commands/zip'
 import commandTag from './commands/tag'
 import commandSearch from './commands/search'
 import commandMakes from './commands/makes'
-import DatabaseDataSource from './datasource/db/DatabaseDataSource'
 import commandUsername from './commands/username'
 import { EventHelper, Event } from './analytics/analytics'
 import commandPopular from './commands/popular'
@@ -20,41 +20,31 @@ import commandCategories from './commands/categories'
 
 dotenv.config()
 
-new DatabaseDataSource().init('mongodb://localhost:27017', 'thingiversemakerbot')
-    .then(function (databaseDataSource) {
-        const analytics = initAnalytics(databaseDataSource)
-        initTelegraf(databaseDataSource, analytics)
-        console.log("Bot started successfully")
-    })
-    .catch(function (err) {
-        console.log("Error starting bot")
-        console.log(err)
-    })
+const userStore = new UserStore()
+const analytics = new EventHelper()
+analytics.logEvent(Event.APP_START)
 
-function initTelegraf(dataBase: DatabaseDataSource, analytics: EventHelper) {
+initTelegraf(userStore, analytics)
+console.log("Bot started successfully")
+
+function initTelegraf(userStore: UserStore, analytics: EventHelper) {
 
     const bot = new Telegraf(process.env.BOT_TOKEN || '')
     const thingiverse = new Thingiverse(process.env.THINGIVERSE_TOKEN)
 
-    commandStart(bot, analytics, dataBase)
-    commandCategories(bot, thingiverse, dataBase, analytics)
+    commandStart(bot, analytics)
+    commandCategories(bot, thingiverse, userStore, analytics)
     commandHelp(bot, analytics)
-    commandLikes(bot, thingiverse, dataBase, analytics)
-    commandCollections(bot, thingiverse, dataBase, analytics)
-    commandDesigns(bot, thingiverse, dataBase, analytics)
-    commandMakes(bot, thingiverse, dataBase, analytics)
+    commandLikes(bot, thingiverse, userStore, analytics)
+    commandCollections(bot, thingiverse, userStore, analytics)
+    commandDesigns(bot, thingiverse, userStore, analytics)
+    commandMakes(bot, thingiverse, userStore, analytics)
     commandFiles(bot, thingiverse, analytics)
     commandZip(bot, thingiverse, analytics)
     commandTag(bot, thingiverse, analytics)
     commandSearch(bot, thingiverse, analytics)
     commandPopular(bot, thingiverse, analytics)
-    commandUsername(bot, dataBase, analytics)
+    commandUsername(bot, userStore, analytics)
 
     bot.launch()
-}
-
-function initAnalytics(db : DatabaseDataSource): EventHelper {
-    const eventHelper = new EventHelper(db)
-    eventHelper.logEvent(Event.APP_START)
-    return eventHelper
 }
